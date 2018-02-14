@@ -1,0 +1,37 @@
+test1.y
+%{
+    #include<stdio.h>
+%}
+%token key id semi comma
+%%
+START : START START1|START1
+;
+
+START1 : KEYWORD VARLIST SEMI {printf("valid input");}
+
+KEYWORD : key
+;
+VARLIST : VARLIST comma id|id
+;
+SEMI : semi
+;
+%%
+void main()
+{
+        yyparse();
+}
+int yywrap(){}
+int yyerror(char *s){printf("invalid input %s",s);}
+
+
+test2.l
+%{
+#include"y.tab.h"
+#include<stdio.h>
+%}
+%%
+"int"|"char"|"float" {return key;}
+","    {return comma;}
+";" {return semi;}
+[_a-zA-Z]+[_a-zA-Z0-9]* {return id;}
+%%
