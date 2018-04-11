@@ -1,0 +1,62 @@
+as6.y_______________________________________________________________
+%{
+	#include<stdio.h>
+%}
+%token ID TYPE
+%%
+S:DS
+DS:DS D			{printf("Valid statement.\n");}
+  |D			{printf("Valid statement.\n");}
+  ;			
+D:TYPE varlist ';'
+ ;
+varlist:varlist','ID
+	|ID
+	;
+%%
+main()
+{
+FILE *fp;
+	extern FILE *yyin;
+	fp=fopen("Sample.txt","r");
+	if(fp==NULL)
+	{
+		printf("ERROR");
+	}
+	else
+	{
+	yyin=fp;
+	yyparse();
+	}
+}
+
+as6.l_______________________________________________________________
+%{
+	#include "y.tab.h"
+%}
+%%
+"int"|"char"|"double"|"string"		{return TYPE;}
+[.;]					{return yytext[0];}
+[a-zA-z][a-zA-z_0-9]*			{return ID;}
+[ \t\n]					{;} 
+%%
+int yywrap()
+{
+return 1;
+}
+
+/*Output:
+pccoe@ubuntu:~/TECOB224/AS6$ yacc -d as6.y
+pccoe@ubuntu:~/TECOB224/AS6$ lex as6.l
+pccoe@ubuntu:~/TECOB224/AS6$ gcc lex.yy.c y.tab.c -ly
+pccoe@ubuntu:~/TECOB224/AS6$ ./a.out
+Valid statement.
+pccoe@ubuntu:~/TECOB224/AS6$ 
+pccoe@ubuntu:~/TECOB224/AS6$ yacc -d as6.y
+pccoe@ubuntu:~/TECOB224/AS6$ lex as6.l
+pccoe@ubuntu:~/TECOB224/AS6$ gcc lex.yy.c y.tab.c -ly
+pccoe@ubuntu:~/TECOB224/AS6$ ./a.out
+syntax error
+%{#pccoe@ubuntu:~/TECOB224/AS6$ 
+
+*/
